@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const app = express();
 
 const port = 3002;
+ 
+app.use(express.json())
+app.use(express.urlencoded({extended: true}));
 
 //create product schema
 const productSchema = new mongoose.Schema({
@@ -11,8 +14,14 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    price: Number,
-    description: String,
+    price: {
+        type:Number,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
     createAt:{
         type: Date,
         default: Date.now
@@ -35,6 +44,21 @@ const connectDB = async () =>{
 
 app.get("/", (req,res)=>{
     res.send('Welcome to home page');
+});
+
+app.post("/products", async  (req,res)=>{
+   try{
+    const newProduct = new Product({
+        title: req.body.title,
+        price: req.body.price,
+        description:req.body.description
+    });
+   const productData = await newProduct.save();
+
+    res.status(201).send({productData});
+    } catch(error){
+    res.status(500).send({message: error.message});
+   }
 });
 
 app.listen(port, async()=>{
