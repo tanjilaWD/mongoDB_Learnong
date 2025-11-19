@@ -5,6 +5,23 @@ const app = express();
 
 const port = 3002;
 
+//create product schema
+const productSchema = new mongoose.Schema({
+    title : {
+        type: String,
+        required: true
+    },
+    price: Number,
+    description: String,
+    createAt:{
+        type: Date,
+        default: Date.now
+    }
+});
+
+// create product model
+const Product = mongoose.model("products", productSchema);
+
 const connectDB = async () =>{
      try{
        await mongoose.connect('mongodb://127.0.0.1:27017/learningDB');
@@ -25,3 +42,5 @@ app.listen(port, async()=>{
     await connectDB();
 
 });
+
+// Database -> collections -> document
